@@ -1,8 +1,16 @@
-function lowest_energy_mode = train_analysis( 
+function result = train_analysis( 
+  waggon_msh_file,
   nofmod,
-  thickness_floor,
-  thickness_wall,
-  thickness_roof
+  Platte_t,
+  Waende_t,
+  dg_surface_geom_t,
+  Saeulen_f_w,
+  Saeulen_f_h,
+  Saeulen_f_t,
+  T_b,
+  T_h,
+  T_t,
+  T_s
 ) 
 
 #material
@@ -21,7 +29,7 @@ data.subtype = "3d";
 #Platte
 
 
-Platte.t = thickness_floor; #mm
+Platte.t = Platte_t; #mm
 
 data.BG_Platte = struct("type","elements",
                         "name", "s4", 
@@ -48,18 +56,18 @@ geom_links = mfs_beamsection("ring", "thin", Kreis.ra, Kreis.ri);
 geom_links.v = vector;
 geom_links.P = Kontakt_Langtr_links;
 
-#Langträger rechts
+#Langtrï¿½ger rechts
 data.BG_Langtraeger_rechts = struct("type","elements",
                         "name", "b2", 
                         "geom", geom_rechts, 
                         "mat", mat);
-#Langträger links
+#Langtrï¿½ger links
 data.BG_Langtraeger_links = struct("type","elements",
                         "name", "b2", 
                         "geom", geom_links, 
                         "mat", mat);
                         
-#Langträger innen
+#Langtrï¿½ger innen
 Kreis.ra = 70; 
 Kreis.ri = 55;                      
 Kontakt_Langtr = [0, Kreis.ra];
@@ -71,7 +79,7 @@ data.BG_Langtraeger_innen = struct("type","elements",
                         "geom", geom_innen, 
                         "mat", mat);
 
-#Querträger
+#Quertrï¿½ger
 #Hauptquertraeger
 I_haupt.b = 100;
 I_haupt.h = 150;
@@ -108,18 +116,18 @@ data.BG_Quertraeger_BC = data.BG_Quertraeger;
 
 #Seitengruppe SG
 
-Waende.t = thickness_wall; #mm
+Waende.t = Waende_t; #mm
 data.SG_Waende = struct("type","elements",
                         "name", "s4", 
                         "geom", Waende, 
                         "mat", mat); 
 
-#Dach- und Fensterträger
+#Dach- und Fenstertrï¿½ger
 vector = [0,0,1];
-T.b = 50;
-T.h = 80;
-T.t = 10;
-T.s = 5;
+T.b = T_b; % 50;
+T.h = T_h; % 80;
+T.t = T_t; % 10;
+T.s = T_s; % 5;
 P_links = [0.5*T.b, -0.5*T.h];
 P_rechts = [-0.5*T.b, -0.5*T.h];
 
@@ -157,7 +165,7 @@ data.SG_Fenstertraeger_rechts = struct("type","elements",
                         "geom", geom_rechts_f, 
                         "mat", mat);
 
-#Säulen
+#Sï¿½ulen
 
 vector = [0,1,0];
 Saeulen_Seiten.w = 200;
@@ -193,12 +201,12 @@ data.SG_B_Saeule_rechts = Saeule_struct_rechts;
 data.SG_C_Saeule_rechts = Saeule_struct_rechts;
 data.SG_D_Saeule_rechts = Saeule_struct_rechts;
 
-#Fenstersäulen
+#Fenstersï¿½ulen
 
 vector = [0,1,0];
-Saeulen_f.w = 120;
-Saeulen_f.h = 250;
-Saeulen_f.t = 10;
+Saeulen_f.w = Saeulen_f_w;
+Saeulen_f.h = Saeulen_f_h;
+Saeulen_f.t = Saeulen_f_t;
 Punkt_links_f = [0.5*Saeulen_f.w,0];
 Punkt_rechts_f = [-0.5*Saeulen_f.w,0];
 
@@ -225,7 +233,7 @@ data.SG_Fenstersaeulen_rechts = Saeule_rechts_f;
 # Dachgruppe
 # ------------------------------------------------------------------------------
 
-# Fundamentaldachbögen (Balken)
+# Fundamentaldachbï¿½gen (Balken)
 
 dg_fdb_beam.type                =                   "elements";
 dg_fdb_beam.name                =                         "b2";
@@ -237,7 +245,7 @@ dg_fdb_beam.mat                 =                          mat;
 
 data.DG_Dachboegen_AD           =                  dg_fdb_beam;
 
-# Strukturdachbögen (Balken)
+# Strukturdachbï¿½gen (Balken)
 
 dg_sdb_beam.type                =                   "elements";
 dg_sdb_beam.name                =                         "b2";
@@ -250,7 +258,7 @@ dg_sdb_beam.mat                 =                          mat;
 data.DG_Dachboegen_BC           =                  dg_sdb_beam;
 data.DG_Dachboegen              =                  dg_sdb_beam;
 
-# Längsträger (Balken)
+# Lï¿½ngstrï¿½ger (Balken)
 
 dg_lt_beam.type                 =                   "elements";
 dg_lt_beam.name                 =                         "b2";
@@ -265,9 +273,9 @@ data.DG_Laengstraeger           =                   dg_lt_beam;
 # Dach (Schale)
 
 dg_surface.type                 =                   "elements";
-dg_surface.name                 =                         "s4";
-dg_surface.geom.t               =                            thickness_roof;
-dg_surface.mat                  =                          mat;
+dg_surface.name                 =                   "s4";
+dg_surface.geom.t               =                   dg_surface_geom_t;
+dg_surface.mat                  =                   mat;
 
 data.DG_Dach                    =                   dg_surface;
    
@@ -282,7 +290,7 @@ data.Drehzapfen =  struct("type", "constraints",
 
 fid = fopen("aufgabe2.res","wt");
 
-model = mfs_import(fid,"waggon.msh", "msh", data);
+model = mfs_import(fid,waggon_msh_file, "msh", data);
 waggon = mfs_new(fid, model);
 
 #Ausgabe Achsen
@@ -292,12 +300,19 @@ mfs_export("waggon.axes", "msh", waggon, "mesh", "axes");
 
 waggon                          =            mfs_stiff(waggon);
 waggon                          =             mfs_mass(waggon);
-mfs_massproperties(fid, waggon);
+mass_prop = mfs_massproperties(fid, waggon);
+
+%refpnt = zeros(1, waggon.nodes.ncoor);
+%R = mfs_rigidmotion(waggon.nodes, waggon.dofs.mxdofpnt, refpnt);
+%mrr = R' * waggon.mass.M * R;
+%mass = mrr(1);
 
 #Eigenschwingungen
 waggon                          =  mfs_freevib(waggon, nofmod);
 
 lowest_energy_mode = waggon.modes.freq(1)
+
+result = [lowest_energy_mode mass_prop.m]
 
 disp("first frequency is:"), disp(lowest_energy_mode)
 
