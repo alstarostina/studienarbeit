@@ -10,7 +10,14 @@ function result = train_analysis(
   T_b,
   T_h,
   T_t,
-  T_s
+  T_s,
+  I_haupt_b,
+  I_haupt_h,
+  I_haupt_t,
+  I_haupt_s,
+  Saeulen_Seiten_w,
+  Saeulen_Seiten_h,
+  Saeulen_Seiten_t
 ) 
 
 #material
@@ -81,10 +88,10 @@ data.BG_Langtraeger_innen = struct("type","elements",
 
 #Quertr�ger
 #Hauptquertraeger
-I_haupt.b = 100;
-I_haupt.h = 150;
-I_haupt.t = 5;
-I_haupt.s = 10; 
+I_haupt.b = I_haupt_b; % 100;
+I_haupt.h = I_haupt_h; % 150;
+I_haupt.t = I_haupt_t; % 5;
+I_haupt.s = I_haupt_s; % 10; 
 P_haupt = [0, -(0.5*I_haupt.h + I_haupt.t)];
 
 geom_haupt = mfs_beamsection("I", I_haupt.b, I_haupt.h, I_haupt.t, I_haupt.s);
@@ -168,9 +175,9 @@ data.SG_Fenstertraeger_rechts = struct("type","elements",
 #S�ulen
 
 vector = [0,1,0];
-Saeulen_Seiten.w = 200;
-Saeulen_Seiten.h = 250;
-Saeulen_Seiten.t = 10;
+Saeulen_Seiten.w = Saeulen_Seiten_w; % 200;
+Saeulen_Seiten.h = Saeulen_Seiten_h; % 250;
+Saeulen_Seiten.t = Saeulen_Seiten_t; % 10;
 Punkt_links = [0.5*Saeulen_Seiten.w,0];
 Punkt_rechts = [-0.5*Saeulen_Seiten.w,0];
 
@@ -310,9 +317,9 @@ mass_prop = mfs_massproperties(fid, waggon);
 #Eigenschwingungen
 waggon                          =  mfs_freevib(waggon, nofmod);
 
-lowest_energy_mode = waggon.modes.freq(1)
+lowest_energy_mode = waggon.modes.freq(1);
 
-result = [lowest_energy_mode mass_prop.m]
+result = [lowest_energy_mode mass_prop.m];
 
 disp("first frequency is:"), disp(lowest_energy_mode)
 
