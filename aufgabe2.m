@@ -84,11 +84,14 @@ data.BG_Hauptquertraeger = struct("type","elements",
                         "geom", geom_haupt, 
                         "mat", mat);
 
-I = struct("b", I_haupt.b*0.5, "h", I_haupt.t*0.5, ...
-           "t", I_haupt.t*0.5, "s", I_haupt.s*0.5);
+                        
+I_BG_quer.b = 80;
+I_BG_quer.h = 130;
+I_BG_quer.t = 3;
+I_BG_quer.s = 5; 
            
-geom =  mfs_beamsection("I", I.b, I.h, I.t, I.s);
-P_quer = [0, -(0.5*I.h)];
+geom =  mfs_beamsection("I", I_BG_quer.b, I_BG_quer.h, I_BG_quer.t, I_BG_quer.s);
+P_quer = [0, -(0.5*I_BG_quer.h)];
 geom.v = vector;  
 geom.P = P_quer; 
 data.BG_Quertraeger = struct("type","elements",

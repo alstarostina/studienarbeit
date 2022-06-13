@@ -15,6 +15,10 @@ function result = train_analysis_v2(
   I_haupt_h,
   I_haupt_t,
   I_haupt_s,
+  I_BG_quer_b,
+  I_BG_quer_h,
+  I_BG_quer_t,
+  I_BG_quer_s,
   I_b,
   I_h,
   I_t,
@@ -81,7 +85,7 @@ I_langtr_i.b = I_langtr_i_b;
 I_langtr_i.h = I_langtr_i_h;
 I_langtr_i.t = I_langtr_i_t;
 I_langtr_i.s = I_langtr_i_s;
-Kreis.ri = 55;                      
+                    
 Kontakt_Langtr = [0, -0.5*(I_langtr_i.h)];
 geom_innen = geom_haupt = mfs_beamsection("I", I_langtr_i.b, I_langtr_i.h, I_langtr_i.t, I_langtr_i.s);
 geom_innen.v = vector;
@@ -107,11 +111,19 @@ data.BG_Hauptquertraeger = struct("type","elements",
                         "geom", geom_haupt, 
                         "mat", mat);
 
-I = struct("b", I_haupt.b*0.5, "h", I_haupt.t*0.5, ...
-           "t", I_haupt.t*0.5, "s", I_haupt.s*0.5);
-           
-geom =  mfs_beamsection("I", I.b, I.h, I.t, I.s);
-P_quer = [0, -(0.5*I.h)];
+I_BG_quer.b = I_BG_quer_b;
+I_BG_quer.h = I_BG_quer_h;
+I_BG_quer.t = I_BG_quer_t;
+I_BG_quer.s = I_BG_quer_s;                         
+                        
+geom =  mfs_beamsection("I", I_BG_quer.b, I_BG_quer.h, I_BG_quer.t, I_BG_quer.s);
+P_quer = [0, -(0.5*I_BG_quer.h)];
+geom.v = vector;  
+geom.P = P_quer; 
+data.BG_Quertraeger = struct("type","elements",
+                        "name", "b2", 
+                        "geom", geom, 
+                        "mat", mat);     
 geom.v = vector;  
 geom.P = P_quer; 
 data.BG_Quertraeger = struct("type","elements",
