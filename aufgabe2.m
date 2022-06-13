@@ -28,40 +28,39 @@ data.BG_Platte = struct("type","elements",
 
 
 vector = [0,0,1];
+Beam.b = 100;
+Beam.h = 70;
+Beam.t = 5;
+Kontakt_Langtr_rechts = [-Beam.b, -Beam.b];
+Kontakt_Langtr_links = [Beam.b, -Beam.b];
 
-Kreis.ra = 50;
-Kreis.ri = 40;
-Kontakt_Langtr_rechts = [-Kreis.ra, -Kreis.ra];
-Kontakt_Langtr_links = [Kreis.ra, -Kreis.ra];
-
-geom_rechts = mfs_beamsection("ring", "thin", Kreis.ra, Kreis.ri);
-##geom_rechts = mfs_beamsection("I", I_haupt.b, I_haupt.h, I_haupt.t, I_haupt.s);
-##Kontakt_Langtr_rechts = [-I_haupt.b, -I_haupt.b];
-##Kontakt_Langtr_links = [I_haupt.b, -I_haupt.b]; 
+geom_rechts = mfs_beamsection("box", "thin", Beam.b, Beam.h, Beam.t);
 geom_rechts.v = vector;
 geom_rechts.P = Kontakt_Langtr_rechts;
 
-geom_links = mfs_beamsection("ring", "thin", Kreis.ra, Kreis.ri);
-#geom_links = mfs_beamsection("I", I_haupt.b, I_haupt.h, I_haupt.t, I_haupt.s);
+geom_links = mfs_beamsection("box", "thin", Beam.b, Beam.h, Beam.t);
 geom_links.v = vector;
 geom_links.P = Kontakt_Langtr_links;
 
-#Langträger rechts
+#Langtrï¿½ger rechts
 data.BG_Langtraeger_rechts = struct("type","elements",
                         "name", "b2", 
                         "geom", geom_rechts, 
                         "mat", mat);
-#Langträger links
+#Langtrï¿½ger links
 data.BG_Langtraeger_links = struct("type","elements",
                         "name", "b2", 
                         "geom", geom_links, 
                         "mat", mat);
                         
-#Langträger innen
-Kreis.ra = 70; 
+#Langtrï¿½ger innen
+I_langtr_i.b = 50;
+I_langtr_i.h = 70;
+I_langtr_i.t = 3;
+I_langtr_i.s = 2;
 Kreis.ri = 55;                      
-Kontakt_Langtr = [0, Kreis.ra];
-geom_innen = mfs_beamsection("ring", "thick", Kreis.ra, Kreis.ri);
+Kontakt_Langtr = [0, -0.5*(I_langtr_i.h)];
+geom_innen = geom_haupt = mfs_beamsection("I", I_langtr_i.b, I_langtr_i.h, I_langtr_i.t, I_langtr_i.s);
 geom_innen.v = vector;
 geom_innen.P = Kontakt_Langtr;
 data.BG_Langtraeger_innen = struct("type","elements",
@@ -69,13 +68,13 @@ data.BG_Langtraeger_innen = struct("type","elements",
                         "geom", geom_innen, 
                         "mat", mat);
 
-#Querträger
+#Quertrï¿½ger
 #Hauptquertraeger
 I_haupt.b = 100;
 I_haupt.h = 150;
 I_haupt.t = 5;
 I_haupt.s = 10;
-P_haupt = [0, -(0.5*I_haupt.h + I_haupt.t)];
+P_haupt = [0, -(0.5*I_haupt.h)];
 
 geom_haupt = mfs_beamsection("I", I_haupt.b, I_haupt.h, I_haupt.t, I_haupt.s);
 geom_haupt.v = vector;
@@ -87,8 +86,9 @@ data.BG_Hauptquertraeger = struct("type","elements",
 
 I = struct("b", I_haupt.b*0.5, "h", I_haupt.t*0.5, ...
            "t", I_haupt.t*0.5, "s", I_haupt.s*0.5);
+           
 geom =  mfs_beamsection("I", I.b, I.h, I.t, I.s);
-P_quer = [0, -(0.5*I.h + I.t)];
+P_quer = [0, -(0.5*I.h)];
 geom.v = vector;  
 geom.P = P_quer; 
 data.BG_Quertraeger = struct("type","elements",
@@ -112,19 +112,19 @@ data.SG_Waende = struct("type","elements",
                         "geom", Waende, 
                         "mat", mat); 
 
-#Dach- und Fensterträger
+#Dach- und Fenstertrï¿½ger
 vector = [0,0,1];
-T.b = 50;
-T.h = 80;
-T.t = 10;
-T.s = 5;
-P_links = [0.5*T.b, -0.5*T.h];
-P_rechts = [-0.5*T.b, -0.5*T.h];
+I.b = 50;
+I.h = 80;
+I.t = 10;
+I.s = 5;
+P_links = [0.5*I.b, -0.5*I.h];
+P_rechts = [-0.5*I.b, -0.5*I.h];
 
-geom_links = mfs_beamsection("I", T.b, T.h, T.t, T.s);
+geom_links = mfs_beamsection("I", I.b, I.h, I.t, I.s);
 geom_links.v = vector;
 geom_links.P = P_links;
-geom_rechts = mfs_beamsection("I", T.b, T.h, T.t, T.s);
+geom_rechts = mfs_beamsection("I", I.b, I.h, I.t, I.s);
 geom_rechts.v = vector;
 geom_rechts.P = P_rechts;
 
@@ -137,25 +137,27 @@ data.SG_Dachtraeger_rechts = struct("type","elements",
                         "geom", geom_rechts, 
                         "mat", mat);
 
-geom_links_f = mfs_beamsection("I", 1.5*T.b, 1.5*T.h, 1.5*T.t, 1.5*T.s);
-geom_links_f.v = vector;
-geom_links_f.P = P_links;
-geom_rechts_f = mfs_beamsection("I", 1.5*T.b, 1.5*T.h, 1.5*T.t, 1.5*T.s);
-geom_rechts_f.v = vector;
-geom_rechts_f.P = P_rechts; 
+Beam_fenster.w = 40;
+Beam_fenster.h = 30;
+Beam_fenster.t = 3;
+geom_fenster_links = mfs_beamsection("box", "thin", Beam_fenster.w, Beam_fenster.h, Beam_fenster.t);
+geom_fenster_links.v = vector;
+geom_fenster_links.P = P_links;
 
- 
+geom_fenster_rechts = mfs_beamsection("box", "thin", Beam_fenster.w, Beam_fenster.h, Beam_fenster.t);
+geom_fenster_rechts.v = vector;
+geom_fenster_rechts.P = P_links;
                         
 data.SG_Fenstertraeger_links  = struct("type","elements",
                         "name", "b2", 
-                        "geom", geom_links_f, 
+                        "geom", geom_fenster_links, 
                         "mat", mat);
 data.SG_Fenstertraeger_rechts = struct("type","elements",
                         "name", "b2", 
-                        "geom", geom_rechts_f, 
+                        "geom", geom_fenster_rechts, 
                         "mat", mat);
 
-#Säulen
+#Sï¿½ulen
 
 vector = [0,1,0];
 Saeulen_Seiten.w = 200;
@@ -191,7 +193,7 @@ data.SG_B_Saeule_rechts = Saeule_struct_rechts;
 data.SG_C_Saeule_rechts = Saeule_struct_rechts;
 data.SG_D_Saeule_rechts = Saeule_struct_rechts;
 
-#Fenstersäulen
+#Fenstersï¿½ulen
 
 vector = [0,1,0];
 Saeulen_f.w = 120;
@@ -223,7 +225,7 @@ data.SG_Fenstersaeulen_rechts = Saeule_rechts_f;
 # Dachgruppe
 # ------------------------------------------------------------------------------
 
-# Fundamentaldachbögen (Balken)
+# Fundamentaldachbï¿½gen (Balken)
 
 dg_fdb_beam.type                =                   "elements";
 dg_fdb_beam.name                =                         "b2";
@@ -235,7 +237,7 @@ dg_fdb_beam.mat                 =                          mat;
 
 data.DG_Dachboegen_AD           =                  dg_fdb_beam;
 
-# Strukturdachbögen (Balken)
+# Strukturdachbï¿½gen (Balken)
 
 dg_sdb_beam.type                =                   "elements";
 dg_sdb_beam.name                =                         "b2";
@@ -248,7 +250,7 @@ dg_sdb_beam.mat                 =                          mat;
 data.DG_Dachboegen_BC           =                  dg_sdb_beam;
 data.DG_Dachboegen              =                  dg_sdb_beam;
 
-# Längsträger (Balken)
+# Lï¿½ngstrï¿½ger (Balken)
 
 dg_lt_beam.type                 =                   "elements";
 dg_lt_beam.name                 =                         "b2";
