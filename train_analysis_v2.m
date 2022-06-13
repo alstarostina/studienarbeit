@@ -21,7 +21,10 @@ function result = train_analysis_v2(
   I_s,
   Saeulen_f_w,
   Saeulen_f_h,
-  Saeulen_f_t
+  Saeulen_f_t,
+  Beam_fenster_w,
+  Beam_fenster_h,
+  Beam_fenster_t
 ) 
 
 fid = fopen("aufgabe2.res","wt");
@@ -160,9 +163,9 @@ data.SG_Dachtraeger_rechts = struct("type","elements",
                         "geom", geom_rechts, 
                         "mat", mat);
 
-Beam_fenster.w = 40;
-Beam_fenster.h = 30;
-Beam_fenster.t = 3;
+Beam_fenster.w = Beam_fenster_w;
+Beam_fenster.h = Beam_fenster_h;
+Beam_fenster.t = Beam_fenster_t;
 geom_fenster_links = mfs_beamsection("box", "thin", Beam_fenster.w, Beam_fenster.h, Beam_fenster.t);
 geom_fenster_links.v = vector;
 geom_fenster_links.P = P_links;
