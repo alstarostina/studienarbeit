@@ -56,12 +56,12 @@ geom_rechts = mfs_beamsection("ring", "thin", Kreis.ra, Kreis.ri);
 ##Kontakt_Langtr_rechts = [-I_haupt.b, -I_haupt.b];
 ##Kontakt_Langtr_links = [I_haupt.b, -I_haupt.b]; 
 geom_rechts.v = vector;
-geom_rechts.P = Kontakt_Langtr_rechts;
+#geom_rechts.P = Kontakt_Langtr_rechts;
 
 geom_links = mfs_beamsection("ring", "thin", Kreis.ra, Kreis.ri);
 #geom_links = mfs_beamsection("I", I_haupt.b, I_haupt.h, I_haupt.t, I_haupt.s);
 geom_links.v = vector;
-geom_links.P = Kontakt_Langtr_links;
+#geom_links.P = Kontakt_Langtr_links;
 
 #Langtr�ger rechts
 data.BG_Langtraeger_rechts = struct("type","elements",
