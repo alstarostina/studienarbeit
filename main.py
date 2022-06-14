@@ -7,15 +7,15 @@ x00_all = np.array([
 	# 29.3,
 	# 21.31157915, 
 	# 23.99104478, # gut!
-	13, # gut!
+	13, 
 	# 1 Waende_t,
 	# 21.9,
 	# 13.91926439,  
-	2, #gut
+	2, 
 	# 2 dg_surface_geom_t,
 	# 3.7,
 	# 1.23333333,
-	2, #gut
+	2,
 	# 3 Beam_b,
 	100,
 	# 4 Beam_h,
@@ -58,7 +58,15 @@ x00_all = np.array([
 	# 22 Beam_fenster_h,
 	30,
 	# 23 Beam_fenster_t
-	3
+	3,
+	# 24 I_BG_quer_b,
+	80,
+	# 25 I_BG_quer_h,
+	130,
+	# 26 I_BG_quer_t,
+	3,
+	# 27 I_BG_quer_s,
+	5,	
 ])
 
 #x00_all = np.array([23.720641823024398,15.093793110602078,1.0486440678037159,100.0,70.0,5.0,50.0,70.0,3.0,2.0,100.0,150.0,5.0,10.0,50.0,80.0,10.0,5.0,120.0,250.0,10.0,40.0,30.0,3.0])
@@ -74,6 +82,8 @@ lower_bounds = x00/3
 upper_bounds = x00*3
 # no component should be smaller than 1 mm due to manufacturing:
 lower_bounds[lower_bounds < 2] = 2 
+# we allow higher wall thickness
+upper_bounds[1] = 16
 
 # add to constraints
 bounds = scipy.optimize.Bounds(lower_bounds, upper_bounds, True)
@@ -96,7 +106,7 @@ def vector_to_str(vec):
 
 
 class OptimizationFunctional:
-	def __init__(self, penalty=1e-0, target_modal_energy=8.4) -> None:
+	def __init__(self, penalty=5e-1, target_modal_energy=8.4) -> None:
 		self.penalty = penalty 
 		self.target_modal_energy = target_modal_energy
 		self.msh_file = 'waggon.msh' 
