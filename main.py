@@ -67,6 +67,12 @@ x00_all = np.array([
 	3,
 	# 27 I_BG_quer_s,
 	5,	
+	# 28 Saeulen_Seiten_w,
+	200,
+	# 29 Saeulen_Seiten_h,
+	250,
+	# 30 Saeulen_Seiten_t
+	10.
 ])
 
 #x00_all = np.array([23.720641823024398,15.093793110602078,1.0486440678037159,100.0,70.0,5.0,50.0,70.0,3.0,2.0,100.0,150.0,5.0,10.0,50.0,80.0,10.0,5.0,120.0,250.0,10.0,40.0,30.0,3.0])
@@ -90,7 +96,7 @@ bounds = scipy.optimize.Bounds(lower_bounds, upper_bounds, True)
 
 
 def extend_vector(vec):
-	return vec
+	return list(vec)
 	# vec2 = np.copy(x00_all)
 	# vec2[0:3] = vec[0:3]
 	# vec2[14:18] = vec[3:7]
@@ -112,6 +118,7 @@ class OptimizationFunctional:
 		self.msh_file = 'waggon.msh' 
 	
 	def train_analysis(self, vec):
+		print(self.msh_file, 1, *extend_vector(vec))
 		res = octave.train_analysis_v2(self.msh_file, 1, *extend_vector(vec))
 		mode, mass = res[0,0], res[0,1]
 		return mode, mass
@@ -120,8 +127,8 @@ class OptimizationFunctional:
 		mode, mass = self.train_analysis(vec) 
 		#energy = (mode-self.target_modal_energy)**2 + self.penalty * mass**2
 		#energy = - (mode)**2 + (mass-8.9)**2
-		energy = - (mode)**2 + 1e-1 * np.exp(100*(mass - 9)) 
-		# energy = - (mode)**2 + self.penalty * mass ** 2 
+		# energy = - (mode)**2 + 1e-1 * np.exp(100*(mass - 9)) 
+		energy = - mode**2 + self.penalty * mass ** 2 
 		print (f'    energy = {mode}, mass = {mass}')
 		return energy 
 
@@ -133,6 +140,10 @@ def saver(vec):
 	mode, mass = to_optimize.train_analysis(vec)
 	print (f'> energy = {mode}, mass = {mass}')
 	print (f'> vec = {vector_to_str(vec)}')
+
+print('start:')
+print(vector_to_str(x00))
+saver(x00)
 
 res = scipy.optimize.minimize(
 	fun=to_optimize,

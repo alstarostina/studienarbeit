@@ -15,10 +15,6 @@ function result = train_analysis_v2(
   I_haupt_h,
   I_haupt_t,
   I_haupt_s,
-  I_BG_quer_b,
-  I_BG_quer_h,
-  I_BG_quer_t,
-  I_BG_quer_s,
   I_b,
   I_h,
   I_t,
@@ -28,11 +24,17 @@ function result = train_analysis_v2(
   Saeulen_f_t,
   Beam_fenster_w,
   Beam_fenster_h,
-  Beam_fenster_t
+  Beam_fenster_t, 
+  I_BG_quer_b, 
+  I_BG_quer_h, 
+  I_BG_quer_t, 
+  I_BG_quer_s, 
+  Saeulen_Seiten_w, 
+  Saeulen_Seiten_h, 
+  Saeulen_Seiten_t
 ) 
 
 fid = fopen("aufgabe2.res","wt");
-
 #material
 mat.type = "iso";
 mat.E = 70000;
@@ -198,9 +200,9 @@ data.SG_Fenstertraeger_rechts = struct("type","elements",
 #S�ulen
 
 vector = [0,1,0];
-Saeulen_Seiten.w = 200;
-Saeulen_Seiten.h = 250;
-Saeulen_Seiten.t = 10;
+Saeulen_Seiten.w = Saeulen_Seiten_w; # 200;
+Saeulen_Seiten.h = Saeulen_Seiten_h; # 250;
+Saeulen_Seiten.t = Saeulen_Seiten_t; # 10;
 Punkt_links = [0.5*Saeulen_Seiten.w,0];
 Punkt_rechts = [-0.5*Saeulen_Seiten.w,0];
 
