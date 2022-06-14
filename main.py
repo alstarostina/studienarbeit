@@ -5,16 +5,16 @@ from oct2py import octave
 x00_all = np.array([
 	# 0 Platte_t,
 	# 29.3,
-	21.31157915, 
-	#23.99104478, # gut!
+	# 21.31157915, 
+	23.99104478, # gut!
 	# 1 Waende_t,
 	# 21.9,
-	13.91926439,  
-	# 14.27326964, #gut
+	# 13.91926439,  
+	14.27326964, #gut
 	# 2 dg_surface_geom_t,
 	# 3.7,
-	1.23333333,
-	# 1.21834555, #gut
+	# 1.23333333,
+	1.21834555, #gut
 	# 3 Beam_b,
 	100,
 	# 4 Beam_h,
@@ -60,9 +60,13 @@ x00_all = np.array([
 	3
 ])
 
+x00_all = np.array([23.720641823024398,15.093793110602078,1.0486440678037159,100.0,70.0,5.0,50.0,70.0,3.0,2.0,100.0,150.0,5.0,10.0,50.0,80.0,10.0,5.0,120.0,250.0,10.0,40.0,30.0,3.0])
+x00_all = np.array([23.754936838925424,15.127430948611654,1.1376214967764928,100.0482731828066,70.03219394743887,5.1951873218661735,49.99419969899615,70.00170839424678,2.9074287787918363,1.9352557762606986,100.00093440466054,150.00495891820788,4.999463630210258,10.012888727672545,50.0060021627139,80.03168820723653,9.98895706184435,4.957197724991066,120.0391056794531,249.99296303940486,9.52212152522604,40.012041086399435,30.011191136804538,3.1780262655382256])
+
 # x00 = x00_all[0:3]
-# x00 = x00_all
-x00 = np.array(list(x00_all[0:3]) + list(x00_all[14:18]) + list(x00_all[21:]))
+x00 = x00_all
+#x00 = np.array(list(x00_all[0:3]) + list(x00_all[14:18]) + list(x00_all[21:]))
+#x00 = np.array(list(x00_all[14:18]))
 
 # we allow our structure to develop in a given interval
 lower_bounds = x00/3
@@ -75,12 +79,14 @@ bounds = scipy.optimize.Bounds(lower_bounds, upper_bounds, True)
 
 
 def extend_vector(vec):
-	vec2 =  np.copy(x00_all)
-	vec2[0:3] = vec[0:3]
-	vec2[14:18] = vec[3:7]
-	vec2[21:] = vec[7:]
+	return vec
+	# vec2 = np.copy(x00_all)
+	# vec2[0:3] = vec[0:3]
+	# vec2[14:18] = vec[3:7]
+	# vec2[21:] = vec[7:]
+	# vec2[14:18] = vec[:]
 	# return list(vec) + list(x00_all)[3:]
-	return list(vec2)
+	# return list(vec2)
 
 
 def vector_to_str(vec):
@@ -103,9 +109,9 @@ class OptimizationFunctional:
 		mode, mass = self.train_analysis(vec) 
 		#energy = (mode-self.target_modal_energy)**2 + self.penalty * mass**2
 		#energy = - (mode)**2 + (mass-8.9)**2
-		energy = - (mode)**2 + 5e-1 * np.exp(100*(mass - 9)) 
+		energy = - (mode)**2 + 1e-1 * np.exp(100*(mass - 9)) 
 		# energy = - (mode)**2 + self.penalty * mass ** 2 
-		# print (f'energy = {mode}, mass = {mass}')
+		print (f'    energy = {mode}, mass = {mass}')
 		return energy 
 
 
